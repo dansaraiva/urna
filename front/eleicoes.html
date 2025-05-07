@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar Eleições - Urna Eletrônica</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header>
+        <h1>Urna Eletrônica - Grêmio Estudantil</h1>
+        <nav>
+            <a href="index.html">Início</a>
+            <a href="chapas.html">Chapas</a>
+            <a href="eleicoes.html" class="active">Eleições</a>
+            <a href="votacao.html">Votação</a>
+            <a href="relatorios.html">Relatórios</a>
+        </nav>
+    </header>
+    <main>
+        <div class="container">
+            <h2>Gerenciar Eleições</h2>
+            <div class="form-section">
+                <form id="eleicaoForm">
+                    <div class="form-group">
+                        <label for="nomeEleicao">Nome da Eleição:</label>
+                        <input type="text" id="nomeEleicao" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="dataInicio">Data de Início:</label>
+                        <input type="datetime-local" id="dataInicio" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="dataFim">Data de Término:</label>
+                        <input type="datetime-local" id="dataFim" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="status">Status:</label>
+                        <select id="status" required>
+                            <option value="AGENDADA">Agendada</option>
+                            <option value="EM_ANDAMENTO">Em Andamento</option>
+                            <option value="FINALIZADA">Finalizada</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn">Cadastrar Eleição</button>
+                </form>
+            </div>
+            <div class="list-section">
+                <h3>Eleições Cadastradas</h3>
+                <div id="listaEleicoes" class="lista"></div>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2025 Urna Eletrônica - Grêmio Estudantil</p>
+    </footer>
+    <script src="js/api.js"></script>
+    <script src="js/eleicoes.js"></script>
+</body>
+</html>

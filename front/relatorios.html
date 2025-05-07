@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatórios - Urna Eletrônica</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Urna Eletrônica - Grêmio Estudantil</h1>
+        <nav>
+            <a href="index.html">Início</a>
+            <a href="chapas.html">Chapas</a>
+            <a href="eleicoes.html">Eleições</a>
+            <a href="votacao.html">Votação</a>
+            <a href="relatorios.html" class="active">Relatórios</a>
+        </nav>
+    </header>
+    <main>
+        <div class="container">
+            <h2>Relatórios</h2>
+            <div class="relatorios-section">
+                <div class="form-group">
+                    <label for="eleicaoSelect">Selecione a Eleição:</label>
+                    <select id="eleicaoSelect"></select>
+                </div>
+                <div class="resultados-container">
+                    <div class="grafico-container">
+                        <canvas id="graficoVotos"></canvas>
+                    </div>
+                    <div class="tabela-container">
+                        <h3>Resultado Detalhado</h3>
+                        <div id="tabelaResultados"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2025 Urna Eletrônica - Grêmio Estudantil</p>
+    </footer>
+    <script src="js/api.js"></script>
+    <script src="js/relatorios.js"></script>
+</body>
+</html>

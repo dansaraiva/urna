@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Votação - Urna Eletrônica</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <h1>Urna Eletrônica - Grêmio Estudantil</h1>
+        <nav>
+            <a href="index.html">Início</a>
+            <a href="chapas.html">Chapas</a>
+            <a href="eleicoes.html">Eleições</a>
+            <a href="votacao.html" class="active">Votação</a>
+            <a href="relatorios.html">Relatórios</a>
+        </nav>
+    </header>
+    <main>
+        <div class="container">
+            <h2>Votação</h2>
+            <div class="votacao-section">
+                <div id="eleicaoAtual" class="info-box">
+                    <h3>Eleição em Andamento</h3>
+                    <div id="eleicaoInfo"></div>
+                </div>
+                <div class="urna-container">
+                    <div id="telaVotacao" class="hidden">
+                        <h3>Selecione sua Chapa</h3>
+                        <div id="listaChapas" class="chapas-grid"></div>
+                    </div>
+                    <div id="confirmacao" class="hidden">
+                        <h3>Confirme seu Voto</h3>
+                        <div id="dadosConfirmacao"></div>
+                        <div class="botoes-confirmacao">
+                            <button class="btn btn-secondary" onclick="corrigirVoto()">CORRIGIR</button>
+                            <button class="btn btn-success" onclick="confirmarVoto()">CONFIRMAR</button>
+                        </div>
+                    </div>
+                    <div id="fim" class="hidden">
+                        <h3>FIM</h3>
+                        <p>Seu voto foi registrado com sucesso!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2025 Urna Eletrônica - Grêmio Estudantil</p>
+    </footer>
+    <script src="js/api.js"></script>
+    <script src="js/votacao.js"></script>
+</body>
+</html>

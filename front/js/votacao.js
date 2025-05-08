@@ -1,11 +1,27 @@
 document.addEventListener('DOMContentLoaded', () => {
+     // Ocultar a barra de navegação
+     const nav = document.querySelector('header nav');
+     if (nav) {
+         nav.style.display = 'none';
+     }
+     
+      document.body.classList.add('modo-votacao');
+     
+     // Iniciar a votação
     iniciarVotacao();
+
+    window.addEventListener('beforeunload', (event) => {
+        
+        event.preventDefault();
+        event.returnValue = 'Você está saindo da tela de votação. Tem certeza?';
+    });
 });
 
 let chapaEscolhida = null;
 let eleicaoAtual = null;
 let chapas = []; // lista global
 let chapaSelecionadaId = null;
+
 
 async function votarEmBranco() {
     if (!eleicaoAtual) {
@@ -152,4 +168,15 @@ function mostrarTela(telaId) {
 function mostrarMensagem(mensagem) {
     const eleicaoInfo = document.getElementById('eleicaoInfo');
     eleicaoInfo.innerHTML = `<p class="mensagem">${mensagem}</p>`;
+}
+
+function encerrarModoVotacao() {
+    // Restaurar a barra de navegação
+    const nav = document.querySelector('header nav');
+    if (nav) {
+        nav.style.display = '';
+    }
+    
+    // Remover classe de modo votação
+    document.body.classList.remove('modo-votacao');
 }

@@ -405,3 +405,27 @@ footer {
 .votos-branco {
     background-color: #f5f5f5;
 }
+/* Estilo para o modo de votação */
+body.modo-votacao header h1 {
+    margin-bottom: 20px; /* Ajuste o espaço onde ficaria a navegação */
+}
+
+/* Opcional: Adicione um botão de administrador oculto */
+.admin-exit {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    background: transparent;
+    border: none;
+    color: transparent;
+    cursor: default;
+    padding: 10px;
+    z-index: 1000;
+}
+
+.admin-exit:active {
+    /* Só ativa após segurar por alguns segundos */
+    color: #333;
+    background: #f0f0f0;
+    border: 1px solid #ccc;
+}

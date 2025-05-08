@@ -57,4 +57,17 @@ public class EleicaoService {
         dto.setStatus(eleicao.getStatus());
         return dto;
     }
+
+    public void deletarEleicao(Long id) {
+        Eleicao eleicao = eleicaoRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException("Eleição não encontrada"));
+        
+        // Verificar se há votos associados (opcional)
+        // Se quiser impedir a exclusão de eleições com votos:
+        // if (votoRepository.existsByEleicaoId(id)) {
+        //     throw new IllegalStateException("Não é possível excluir uma eleição que já possui votos");
+        // }
+        
+        eleicaoRepository.delete(eleicao);
+    }
 }

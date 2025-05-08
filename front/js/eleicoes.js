@@ -59,6 +59,70 @@ async function cadastrarEleicao(event) {
     }
 }
 
+async function deletarEleicao(id) {
+    if (confirm('Tem certeza que deseja excluir esta eleição? Esta ação não pode ser desfeita.')) {
+        try {
+            const sucesso = await api.deletarEleicao(id);
+            if (sucesso) {
+                alert('Eleição excluída com sucesso!');
+                carregarEleicoes(); // Recarrega a lista
+            } else {
+                alert('Não foi possível excluir a eleição.');
+            }
+        } catch (error) {
+            console.error('Erro ao excluir eleição:', error);
+            alert('Erro ao excluir eleição: ' + error.message);
+        }
+    }
+}
+
+async function alterarStatus(id) {
+    try {
+        // Obter a eleição atual para verificar o status
+        const eleicoes = await api.getEleicoes();
+        const eleicao = eleicoes.find(e => e.id === id);
+        
+        if (!eleicao) {
+            alert('Eleição não encontrada');
+            return;
+        }
+        
+        // Determinar o próximo status
+        let novoStatus;
+        switch (eleicao.status) {
+            case 'AGENDADA':
+                novoStatus = 'EM_ANDAMENTO';
+                break;
+            case 'EM_ANDAMENTO':
+                novoStatus = 'FINALIZADA';
+                break;
+            case 'FINALIZADA':
+                novoStatus = 'AGENDADA';
+                break;
+            default:
+                novoStatus = 'AGENDADA';
+        }
+        
+        // Confirmar a alteração
+        if (confirm(`Deseja alterar o status da eleição de ${eleicao.status} para ${novoStatus}?`)) {
+            // Adicionar este método ao objeto api
+            const response = await fetch(`${API_URL}/eleicoes/${id}/status?status=${novoStatus}`, {
+                method: 'PUT'
+            });
+            
+            if (response.ok) {
+                alert('Status alterado com sucesso!');
+                carregarEleicoes(); // Recarrega a lista
+            } else {
+                alert('Não foi possível alterar o status da eleição.');
+            }
+        }
+    } catch (error) {
+        console.error('Erro ao alterar status:', error);
+        alert('Erro ao alterar status: ' + error.message);
+    }
+}
+
 function formatarData(data) {
     return new Date(data).toLocaleString();
 }

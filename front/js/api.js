@@ -132,5 +132,11 @@ const api = {
             throw new Error('Erro ao buscar resultados');
         }
         return response.json();
+    },
+    async deletarEleicao(id) {
+        const response = await fetch(`${API_URL}/eleicoes/${id}`, {
+            method: 'DELETE'
+        });
+        return response.ok;
     }
 };

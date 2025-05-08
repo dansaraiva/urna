@@ -38,4 +38,9 @@ public class EleicaoController {
             @RequestParam EleicaoStatus status) {
         return eleicaoService.atualizarStatus(id, status);
     }
+
+    @DeleteMapping("/{id}")
+    public void deletarEleicao(@PathVariable Long id) {
+        eleicaoService.deletarEleicao(id);
+    }
 }

@@ -54,6 +54,29 @@
     <footer>
         <p>&copy; 2025 Urna Eletrônica - Grêmio Estudantil</p>
     </footer>
+    <!-- Adicione isso no final do body, antes dos scripts -->
+<button id="adminExit" class="admin-exit" title="Acesso administrativo">Admin</button>
+<script>
+    // Adicione este script para permitir que administradores saiam do modo votação
+    document.getElementById('adminExit').addEventListener('mousedown', function() {
+        // Inicia um temporizador quando o botão é pressionado
+        this.pressTimer = window.setTimeout(() => {
+            if (confirm('Deseja realmente sair do modo de votação? Esta ação é apenas para administradores.')) {
+                // Restaura a navegação
+                const nav = document.querySelector('header nav');
+                if (nav) nav.style.display = '';
+                document.body.classList.remove('modo-votacao');
+            }
+        }, 3000); // 3 segundos de pressão para ativar
+        return false;
+    });
+    
+    document.getElementById('adminExit').addEventListener('mouseup', function() {
+        // Cancela o temporizador se o botão for solto antes do tempo
+        clearTimeout(this.pressTimer);
+        return false;
+    });
+</script>
     <script src="js/api.js"></script>
     <script src="js/votacao.js"></script>
 </body>

@@ -59,4 +59,28 @@ async function deletarChapa(id) {
             alert('Erro ao deletar chapa');
         }
     }
+    let chapas = []; // mantenha a lista globalmente
+    let chapaSelecionadaId = null;
+    
+    const container = document.getElementById('chapasContainer');
+container.innerHTML = ''; // Limpa antes de renderizar
+
+chapas.forEach(chapa => {
+  const card = document.createElement('div');
+  card.className = 'chapa-card';
+  card.innerHTML = `
+    <div class="chapa-nome">${chapa.nome}</div>
+    <div class="chapa-desc">${chapa.descricao || ''}</div>
+    <button class="chapa-votar-btn" data-id="${chapa.id}">Votar</button>
+  `;
+  container.appendChild(card);
+});
+    
+    function selecionarChapa(id, nome) {
+      chapaSelecionadaId = id;
+      exibirChapas(chapas); // re-renderiza para mostrar seleção
+      // Aqui você pode exibir a confirmação, etc.
+    }
+    
+    
 }

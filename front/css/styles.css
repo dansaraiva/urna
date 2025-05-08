@@ -173,33 +173,65 @@ footer {
     .form-section, .list-section {
         padding: 1rem;
     }
+}
 /* Votação */
-.urna-container {
-    background: var(--white);
-    padding: 2rem;
-    border-radius: 8px;
-    margin-top: 2rem;
-}
-
 .chapas-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
-    margin-top: 1rem;
-}
-
-.chapa-card {
-    background: var(--light-gray);
-    padding: 1rem;
-    border-radius: 4px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 60vh;
+    padding: 40px 0;
+    box-sizing: border-box;
+    width: 100%;
+  }
+  
+  .chapa-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+    width: 320px;
+    padding: 32px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .chapa-card.selected {
+    border: 2px solid #1976d2;
+    box-shadow: 0 8px 32px rgba(25, 118, 210, 0.15);
+  }
+  
+  .chapa-nome {
+    font-size: 1.4em;
+    font-weight: bold;
+    margin-bottom: 12px;
+    color: #1976d2;
+    text-align: center;
+  }
+  
+  .chapa-desc {
+    color: #444;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .chapa-votar-btn {
+    background: #1976d2;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 12px 32px;
+    font-size: 1em;
     cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.chapa-card:hover {
-    background: #e0e0e0;
-}
-
+    transition: background 0.2s;
+  }
+  
+  .chapa-votar-btn:hover {
+    background: #125ea2;
+  }
 .hidden {
     display: none;
 }
@@ -266,4 +298,3 @@ footer {
 
 
 
-}

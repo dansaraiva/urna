@@ -1,9 +1,11 @@
-let chapaEscolhida = null;
-let eleicaoAtual = null;
-
 document.addEventListener('DOMContentLoaded', () => {
     iniciarVotacao();
 });
+
+let chapaEscolhida = null;
+let eleicaoAtual = null;
+let chapas = []; // lista global
+let chapaSelecionadaId = null;
 
 async function iniciarVotacao() {
     try {
@@ -17,7 +19,7 @@ async function iniciarVotacao() {
         }
 
         // Carregar chapas
-        const chapas = await api.getChapas();
+        chapas = await api.getChapas();
         exibirChapas(chapas);
         
         mostrarTela('telaVotacao');
@@ -28,48 +30,63 @@ async function iniciarVotacao() {
 }
 
 function exibirChapas(chapas) {
-    const listaChapas = document.getElementById('listaChapas');
-    listaChapas.innerHTML = chapas.map(chapa => `
-        <div class="chapa-card" onclick="selecionarChapa(${chapa.id}, '${chapa.nome}')">
-            <h4>${chapa.nome}</h4>
-            <p>${chapa.integrantes}</p>
-        </div>
-    `).join('');
+  const container = document.getElementById('listaChapas');
+  container.innerHTML = '';
+
+  chapas.forEach(chapa => {
+    const card = document.createElement('div');
+    card.className = 'chapa-card' + (chapaSelecionadaId === chapa.id ? ' selected' : '');
+    card.innerHTML = `
+      <div class="chapa-nome">${chapa.nome}</div>
+      <div class="chapa-desc">${chapa.descricao || ''}</div>
+      <button class="chapa-votar-btn" data-id="${chapa.id}">Votar</button>
+    `;
+    // Selecionar chapa ao clicar no card ou botão
+    card.querySelector('.chapa-votar-btn').onclick = () => selecionarChapa(chapa.id, chapa.nome);
+    card.onclick = (e) => {
+      if (!e.target.classList.contains('chapa-votar-btn')) {
+        selecionarChapa(chapa.id, chapa.nome);
+      }
+    };
+    container.appendChild(card);
+  });
 }
 
 function selecionarChapa(id, nome) {
-    chapaEscolhida = { id, nome };
-    
-    const dadosConfirmacao = document.getElementById('dadosConfirmacao');
-    dadosConfirmacao.innerHTML = `
-        <p>Chapa selecionada:</p>
-        <h4>${nome}</h4>
-    `;
-    
-    mostrarTela('confirmacao');
+    chapaSelecionadaId = id;
+    exibirChapas(chapas); // Atualiza visual
+  
+    // Mostra tela de confirmação
+    document.getElementById('telaVotacao').classList.add('hidden');
+    document.getElementById('confirmacao').classList.remove('hidden');
+    document.getElementById('dadosConfirmacao').innerText = nome;
 }
 
 function corrigirVoto() {
-    chapaEscolhida = null;
-    mostrarTela('telaVotacao');
+    document.getElementById('confirmacao').classList.add('hidden');
+    document.getElementById('telaVotacao').classList.remove('hidden');
 }
 
 async function confirmarVoto() {
-    if (!chapaEscolhida || !eleicaoAtual) return;
-
+    if (!chapaSelecionadaId || !eleicaoAtual) return;
     try {
-        await api.registrarVoto({
-            chapaId: chapaEscolhida.id,
-            eleicaoId: eleicaoAtual.id
-        });
+        await api.registrarVoto(chapaSelecionadaId, eleicaoAtual.id);
+        document.getElementById('confirmacao').classList.add('hidden');
+        document.getElementById('fim').classList.remove('hidden');
         
-        mostrarTela('fim');
+        // Aguarda 3 segundos e reinicia o processo de votação
         setTimeout(() => {
-            window.location.href = 'index.html';
-        }, 3000);
-    } catch (error) {
-        console.error('Erro ao registrar voto:', error);
-        mostrarMensagem('Erro ao registrar o voto');
+            // Limpa a seleção atual
+            chapaSelecionadaId = null;
+            // Esconde a tela de fim
+            document.getElementById('fim').classList.add('hidden');
+            // Mostra a tela de votação
+            document.getElementById('telaVotacao').classList.remove('hidden');
+            // Atualiza a exibição das chapas
+            exibirChapas(chapas);
+        }, 3000); // 3000 milissegundos = 3 segundos
+    } catch (e) {
+        alert('Erro ao registrar voto: ' + e.message);
     }
 }
 

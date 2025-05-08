@@ -43,19 +43,43 @@ const api = {
     },
 
     // Votos
-    async registrarVoto(voto) {
-        const response = await fetch(`${API_URL}/votos`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(voto)
-        });
-        return response.json();
+    async registrarVoto(chapaId, eleicaoId) {
+        try {
+            // Converter para número e validar
+            const votoDTO = {
+                chapaId: Number(chapaId),
+                eleicaoId: Number(eleicaoId)
+            };
+
+            // Validar se os IDs são números válidos
+            if (isNaN(votoDTO.chapaId) || isNaN(votoDTO.eleicaoId)) {
+                throw new Error('IDs inválidos');
+            }
+
+            console.log('Enviando voto:', votoDTO); // Debug
+
+            const response = await fetch(`${API_URL}/votos`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(votoDTO)
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(errorText);
+            }
+
+            return await response.json();
+        } catch (error) {
+            console.error('Erro ao registrar voto:', error);
+            throw error;
+        }
     },
 
-    async getResultados() {
-        const response = await fetch(`${API_URL}/relatorios/votos`);
+    async getResultados(eleicaoId) {
+        const response = await fetch(`${API_URL}/relatorios/votos/${eleicaoId}`);
         return response.json();
     }
 };

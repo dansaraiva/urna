@@ -32,4 +32,6 @@ public class Voto {
     
     @Column(nullable = false)
     private String identificadorUnico;
+
+    private boolean votoBranco;
 }

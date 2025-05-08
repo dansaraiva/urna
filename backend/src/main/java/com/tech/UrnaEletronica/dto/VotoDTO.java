@@ -6,4 +6,5 @@ import lombok.Data;
 public class VotoDTO {
     private Long chapaId;
     private Long eleicaoId;
+    private boolean votoBranco;
 }

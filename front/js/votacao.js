@@ -7,6 +7,33 @@ let eleicaoAtual = null;
 let chapas = []; // lista global
 let chapaSelecionadaId = null;
 
+async function votarEmBranco() {
+    if (!eleicaoAtual) {
+        alert('Nenhuma eleição em andamento.');
+        return;
+    }
+
+    if (confirm('Confirma seu voto em BRANCO?')) {
+        try {
+            console.log('Enviando voto em branco para eleição ID:', eleicaoAtual.id);
+            await api.registrarVotoBranco(eleicaoAtual.id);
+            
+            // Mostra a tela de fim
+            document.getElementById('telaVotacao').classList.add('hidden');
+            document.getElementById('fim').classList.remove('hidden');
+            
+            // Aguarda 3 segundos e reinicia o processo de votação
+            setTimeout(() => {
+                document.getElementById('fim').classList.add('hidden');
+                document.getElementById('telaVotacao').classList.remove('hidden');
+            }, 3000);
+            
+        } catch (error) {
+            console.error('Erro ao votar em branco:', error);
+            alert('Não foi possível registrar o voto em branco. Por favor, tente novamente.');
+        }
+    }
+}
 async function iniciarVotacao() {
     try {
         // Carregar eleição atual
@@ -67,6 +94,7 @@ function exibirChapas(chapas) {
       container.appendChild(card);
     });
 }
+
   function selecionarChapa(id, nome) {
     chapaSelecionadaId = id;
     exibirChapas(chapas); // Atualiza visual

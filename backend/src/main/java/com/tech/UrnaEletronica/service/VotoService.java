@@ -20,15 +20,11 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class VotoService {
-    
     private final VotoRepository votoRepository;
     private final ChapaRepository chapaRepository;
     private final EleicaoRepository eleicaoRepository;
     
     public void registrarVoto(VotoDTO votoDTO) {
-        Chapa chapa = chapaRepository.findById(votoDTO.getChapaId())
-                .orElseThrow(() -> new EntityNotFoundException("Chapa não encontrada"));
-        
         Eleicao eleicao = eleicaoRepository.findById(votoDTO.getEleicaoId())
                 .orElseThrow(() -> new EntityNotFoundException("Eleição não encontrada"));
         
@@ -40,11 +36,26 @@ public class VotoService {
         }
         
         Voto voto = new Voto();
-        voto.setChapa(chapa);
+        
+        // Se não for voto em branco, busca a chapa
+        if (!votoDTO.isVotoBranco()) {
+            Chapa chapa = chapaRepository.findById(votoDTO.getChapaId())
+                    .orElseThrow(() -> new EntityNotFoundException("Chapa não encontrada"));
+            voto.setChapa(chapa);
+        }
+        
         voto.setEleicao(eleicao);
         voto.setDataHora(LocalDateTime.now());
         voto.setIdentificadorUnico(identificadorUnico);
+        voto.setVotoBranco(votoDTO.isVotoBranco());
         
         votoRepository.save(voto);
+    }
+
+    public void registrarVotoBranco(Long eleicaoId) {
+        VotoDTO votoDTO = new VotoDTO();
+        votoDTO.setEleicaoId(eleicaoId);
+        votoDTO.setVotoBranco(true);
+        registrarVoto(votoDTO);
     }
 }

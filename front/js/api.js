@@ -60,17 +60,22 @@ const api = {
     },
 
     // Votos
-    async registrarVoto(chapaId, eleicaoId) {
+    async registrarVoto(chapaId, eleicaoId, votoBranco = false) {
         try {
-            // Converter para número e validar
             const votoDTO = {
-                chapaId: Number(chapaId),
-                eleicaoId: Number(eleicaoId)
+                chapaId: votoBranco ? null : Number(chapaId),
+                eleicaoId: Number(eleicaoId),
+                votoBranco: votoBranco
             };
 
-            // Validar se os IDs são números válidos
-            if (isNaN(votoDTO.chapaId) || isNaN(votoDTO.eleicaoId)) {
-                throw new Error('IDs inválidos');
+            // Validar se o ID da eleição é válido
+            if (isNaN(votoDTO.eleicaoId)) {
+                throw new Error('ID da eleição inválido');
+            }
+
+            // Se não for voto em branco, validar ID da chapa
+            if (!votoBranco && isNaN(votoDTO.chapaId)) {
+                throw new Error('ID da chapa inválido');
             }
 
             console.log('Enviando voto:', votoDTO); // Debug
@@ -94,9 +99,38 @@ const api = {
             throw error;
         }
     },
-
+    async registrarVotoBranco(eleicaoId) {
+        try {
+            const votoDTO = {
+                eleicaoId: Number(eleicaoId)
+            };
+            
+            console.log('Enviando voto em branco para eleição:', eleicaoId);
+            
+            const response = await fetch(`${API_URL}/votos/branco`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(votoDTO)
+            });
+            
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(errorText);
+            }
+            
+            return await response.json();
+        } catch (error) {
+            console.error('Erro ao registrar voto em branco:', error);
+            throw error;
+        }
+    },
     async getResultados(eleicaoId) {
         const response = await fetch(`${API_URL}/relatorios/votos/${eleicaoId}`);
+        if (!response.ok) {
+            throw new Error('Erro ao buscar resultados');
+        }
         return response.json();
     }
 };

@@ -35,6 +35,7 @@ public class ChapaService {
         Chapa chapa = new Chapa();
         chapa.setNome(chapaDTO.getNome());
         chapa.setIntegrantes(chapaDTO.getIntegrantes());
+        chapa.setFotoUrl(chapaDTO.getFotoUrl()); // Adicione esta linha
         return toDTO(chapaRepository.save(chapa));
     }
     
@@ -47,6 +48,7 @@ public class ChapaService {
         dto.setId(chapa.getId());
         dto.setNome(chapa.getNome());
         dto.setIntegrantes(chapa.getIntegrantes());
+        dto.setFotoUrl(chapa.getFotoUrl()); // Adicione esta linha
         return dto;
     }
 }

@@ -7,6 +7,7 @@ const api = {
         return response.json();
     },
 
+   
     async cadastrarChapa(chapa) {
         const response = await fetch(`${API_URL}/chapas`, {
             method: 'POST',
@@ -16,6 +17,22 @@ const api = {
             body: JSON.stringify(chapa)
         });
         return response.json();
+    },
+    async uploadFoto(file) {
+        const formData = new FormData();
+        formData.append('file', file);
+        
+        const response = await fetch(`${API_URL}/chapas/upload`, {
+            method: 'POST',
+            body: formData
+        });
+        
+        if (!response.ok) {
+            throw new Error('Erro ao fazer upload da imagem');
+        }
+        
+        const result = await response.json();
+        return result.url;
     },
 
     async deletarChapa(id) {

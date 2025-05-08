@@ -1,3 +1,8 @@
+// Variáveis globais (se necessário)
+let chapas = [];
+let chapaSelecionadaId = null;
+
+// Event Listener quando o DOM carrega
 document.addEventListener('DOMContentLoaded', () => {
     carregarChapas();
 
@@ -7,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+// Função para carregar chapas
 async function carregarChapas() {
     try {
         const chapas = await api.getChapas();
@@ -16,6 +22,7 @@ async function carregarChapas() {
             listaChapas.innerHTML = chapas.map(chapa => `
                 <div class="lista-item">
                     <div>
+                        ${chapa.fotoUrl ? `<img src="${chapa.fotoUrl}" alt="${chapa.nome}" class="chapa-foto">` : ''}
                         <h4>${chapa.nome}</h4>
                         <p>${chapa.integrantes}</p>
                     </div>
@@ -31,14 +38,27 @@ async function carregarChapas() {
     }
 }
 
+// Função para cadastrar chapa
 async function cadastrarChapa(event) {
     event.preventDefault();
 
     const nome = document.getElementById('nomeChapa').value;
     const integrantes = document.getElementById('integrantes').value;
-
+    const fotoInput = document.getElementById('fotoChapa');
+    
     try {
-        await api.cadastrarChapa({ nome, integrantes });
+        let fotoUrl = null;
+        
+        if (fotoInput && fotoInput.files && fotoInput.files[0]) {
+            fotoUrl = await api.uploadFoto(fotoInput.files[0]);
+        }
+        
+        await api.cadastrarChapa({ 
+            nome, 
+            integrantes,
+            fotoUrl 
+        });
+        
         alert('Chapa cadastrada com sucesso!');
         event.target.reset();
         carregarChapas();
@@ -48,39 +68,45 @@ async function cadastrarChapa(event) {
     }
 }
 
+// Função para deletar chapa
 async function deletarChapa(id) {
     if (confirm('Tem certeza que deseja excluir esta chapa?')) {
         try {
-            await api.deletarChapa(id);
-            alert('Chapa excluída com sucesso!');
-            carregarChapas();
+            const deleted = await api.deletarChapa(id);
+            if (deleted) {
+                alert('Chapa excluída com sucesso!');
+                await carregarChapas();
+            } else {
+                throw new Error('Não foi possível excluir a chapa');
+            }
         } catch (error) {
             console.error('Erro ao deletar chapa:', error);
-            alert('Erro ao deletar chapa');
+            alert('Erro ao deletar chapa: ' + error.message);
         }
     }
-    let chapas = []; // mantenha a lista globalmente
-    let chapaSelecionadaId = null;
-    
-    const container = document.getElementById('chapasContainer');
-container.innerHTML = ''; // Limpa antes de renderizar
+}
 
-chapas.forEach(chapa => {
-  const card = document.createElement('div');
-  card.className = 'chapa-card';
-  card.innerHTML = `
-    <div class="chapa-nome">${chapa.nome}</div>
-    <div class="chapa-desc">${chapa.descricao || ''}</div>
-    <button class="chapa-votar-btn" data-id="${chapa.id}">Votar</button>
-  `;
-  container.appendChild(card);
-});
-    
-    function selecionarChapa(id, nome) {
-      chapaSelecionadaId = id;
-      exibirChapas(chapas); // re-renderiza para mostrar seleção
-      // Aqui você pode exibir a confirmação, etc.
-    }
-    
-    
+// Função para exibir chapas na interface de votação (se necessário)
+function exibirChapasVotacao(chapas) {
+    const container = document.getElementById('chapasContainer');
+    if (!container) return;
+
+    container.innerHTML = ''; // Limpa antes de renderizar
+
+    chapas.forEach(chapa => {
+        const card = document.createElement('div');
+        card.className = 'chapa-card';
+        card.innerHTML = `
+            <div class="chapa-nome">${chapa.nome}</div>
+            <div class="chapa-desc">${chapa.descricao || ''}</div>
+            <button class="chapa-votar-btn" data-id="${chapa.id}">Votar</button>
+        `;
+        container.appendChild(card);
+    });
+}
+
+// Função para selecionar chapa (se necessário para votação)
+function selecionarChapa(id, nome) {
+    chapaSelecionadaId = id;
+    exibirChapasVotacao(chapas); // re-renderiza para mostrar seleção
 }

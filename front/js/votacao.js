@@ -20,6 +20,13 @@ async function iniciarVotacao() {
 
         // Carregar chapas
         chapas = await api.getChapas();
+        console.log("Chapas carregadas:", chapas); // Log para verificar os dados
+        
+        // Verificar se as chapas têm URLs de fotos
+        chapas.forEach(chapa => {
+            console.log(`Chapa ${chapa.id} - ${chapa.nome} - URL da foto: ${chapa.fotoUrl}`);
+        });
+        
         exibirChapas(chapas);
         
         mostrarTela('telaVotacao');
@@ -30,36 +37,53 @@ async function iniciarVotacao() {
 }
 
 function exibirChapas(chapas) {
-  const container = document.getElementById('listaChapas');
-  container.innerHTML = '';
-
-  chapas.forEach(chapa => {
-    const card = document.createElement('div');
-    card.className = 'chapa-card' + (chapaSelecionadaId === chapa.id ? ' selected' : '');
-    card.innerHTML = `
-      <div class="chapa-nome">${chapa.nome}</div>
-      <div class="chapa-desc">${chapa.descricao || ''}</div>
-      <button class="chapa-votar-btn" data-id="${chapa.id}">Votar</button>
-    `;
-    // Selecionar chapa ao clicar no card ou botão
-    card.querySelector('.chapa-votar-btn').onclick = () => selecionarChapa(chapa.id, chapa.nome);
-    card.onclick = (e) => {
-      if (!e.target.classList.contains('chapa-votar-btn')) {
-        selecionarChapa(chapa.id, chapa.nome);
+    const container = document.getElementById('listaChapas');
+    container.innerHTML = '';
+  
+    chapas.forEach(chapa => {
+      console.log(`Renderizando chapa ${chapa.id} - Tem foto? ${Boolean(chapa.fotoUrl)}`);
+      
+      const card = document.createElement('div');
+      card.className = 'chapa-card' + (chapaSelecionadaId === chapa.id ? ' selected' : '');
+      
+      // Verificar a URL da foto antes de renderizar
+      if (chapa.fotoUrl) {
+        console.log(`URL da foto para chapa ${chapa.id}: ${chapa.fotoUrl}`);
       }
-    };
-    container.appendChild(card);
-  });
+      
+      card.innerHTML = `
+        ${chapa.fotoUrl ? `<div class="chapa-foto"><img src="${chapa.fotoUrl}" alt="${chapa.nome}" onerror="console.error('Erro ao carregar imagem: ${chapa.fotoUrl}')"></div>` : ''}
+        <div class="chapa-nome">${chapa.nome}</div>
+        <div class="chapa-integrantes">${chapa.integrantes || ''}</div>
+        <button class="chapa-votar-btn" data-id="${chapa.id}">Votar</button>
+      `;
+      // Selecionar chapa ao clicar no card ou botão
+      card.querySelector('.chapa-votar-btn').onclick = () => selecionarChapa(chapa.id, chapa.nome);
+      card.onclick = (e) => {
+        if (!e.target.classList.contains('chapa-votar-btn')) {
+          selecionarChapa(chapa.id, chapa.nome);
+        }
+      };
+      container.appendChild(card);
+    });
 }
-
-function selecionarChapa(id, nome) {
+  function selecionarChapa(id, nome) {
     chapaSelecionadaId = id;
     exibirChapas(chapas); // Atualiza visual
-  
+    
+    // Encontra a chapa selecionada
+    const chapaSelecionada = chapas.find(chapa => chapa.id === id);
+    
+    // Prepara o conteúdo da confirmação
+    let confirmacaoHTML = `
+      ${chapaSelecionada.fotoUrl ? `<div class="chapa-foto-confirmacao"><img src="${chapaSelecionada.fotoUrl}" alt="${nome}"></div>` : ''}
+      <p>${nome}</p>
+    `;
+    
     // Mostra tela de confirmação
     document.getElementById('telaVotacao').classList.add('hidden');
     document.getElementById('confirmacao').classList.remove('hidden');
-    document.getElementById('dadosConfirmacao').innerText = nome;
+    document.getElementById('dadosConfirmacao').innerHTML = confirmacaoHTML;
 }
 
 function corrigirVoto() {
